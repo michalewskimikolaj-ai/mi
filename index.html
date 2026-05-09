@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz: niemieckie auta 1990-2000</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --navy: #03133a;
+      --blue: #075bc9;
+      --gold: #ffd35a;
+      --gold-dark: #b57711;
+      --cream: #fff8df;
+      --ink: #111827;
+      --red: #e33830;
+      --green: #24d17e;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--white);
+      background:
+        linear-gradient(180deg, rgba(3, 19, 58, 0.94), rgba(2, 9, 29, 0.98)),
+        url("assets/quiz-show-car.png") center top / cover fixed;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+    }
+
+    .app {
+      width: min(1120px, 100%);
+      min-height: 700px;
+      display: grid;
+      grid-template-columns: minmax(330px, 0.95fr) minmax(380px, 1.05fr);
+      overflow: hidden;
+      border: 3px solid rgba(255, 211, 90, 0.9);
+      border-radius: 18px;
+      background: rgba(3, 19, 58, 0.92);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48);
+    }
+
+    .visual {
+      position: relative;
+      min-height: 700px;
+      background:
+        linear-gradient(180deg, rgba(5, 37, 99, 0.03), rgba(1, 8, 27, 0.72)),
+        url("assets/quiz-show-car.png") center top / cover no-repeat;
+    }
+
+    .visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(3, 19, 58, 0), rgba(3, 19, 58, 0.92));
+      pointer-events: none;
+    }
+
+    .quiz {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      padding: 38px;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(255, 211, 90, 0.16), transparent 32%),
+        linear-gradient(180deg, rgba(6, 46, 129, 0.96), rgba(3, 18, 58, 0.98));
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .kicker {
+      margin: 0;
+      color: var(--gold);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .counter {
+      min-width: 116px;
+      padding: 9px 14px;
+      border: 1px solid rgba(255, 211, 90, 0.55);
+      border-radius: 999px;
+      color: var(--cream);
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--white);
+      font-size: 2.35rem;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .progress {
+      height: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 211, 90, 0.55);
+      border-radius: 999px;
+      background: rgba(2, 8, 26, 0.55);
+    }
+
+    .progress span {
+      display: block;
+      width: 10%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--gold), #ff8b32);
+      transition: width 220ms ease;
+    }
+
+    .question-box {
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      padding: 24px;
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      color: var(--ink);
+      background: var(--cream);
+      box-shadow: inset 0 0 0 3px rgba(181, 119, 17, 0.2);
+    }
+
+    .question {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .answers {
+      display: grid;
+      gap: 14px;
+    }
+
+    .answer {
+      min-height: 68px;
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      align-items: stretch;
+      padding: 0;
+      overflow: hidden;
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      color: var(--ink);
+      cursor: pointer;
+      background: var(--cream);
+      box-shadow: 0 10px 0 rgba(0, 0, 0, 0.18);
+      transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+    }
+
+    .answer:hover,
+    .answer:focus-visible {
+      transform: translateY(-2px);
+      border-color: #ffffff;
+      box-shadow: 0 13px 0 rgba(0, 0, 0, 0.2);
+      outline: none;
+    }
+
+    .answer:disabled {
+      cursor: default;
+      opacity: 0.9;
+    }
+
+    .answer .letter {
+      display: grid;
+      place-items: center;
+      color: var(--navy);
+      background: var(--gold);
+      font-size: 1.85rem;
+      font-weight: 900;
+    }
+
+    .answer .text {
+      display: flex;
+      align-items: center;
+      padding: 14px 18px;
+      font-size: 1rem;
+      font-weight: 800;
+      line-height: 1.28;
+      text-align: left;
+    }
+
+    .answer.correct {
+      border-color: var(--green);
+      background: #eafff3;
+    }
+
+    .answer.wrong {
+      border-color: var(--red);
+      background: #fff0ef;
+    }
+
+    .result {
+      display: none;
+      flex: 1;
+      align-content: center;
+      gap: 18px;
+      min-height: 430px;
+    }
+
+    .result.show {
+      display: grid;
+    }
+
+    .result-panel {
+      padding: 28px;
+      border: 2px solid var(--gold);
+      border-radius: 14px;
+      color: var(--ink);
+      background: var(--cream);
+      box-shadow: inset 0 0 0 3px rgba(181, 119, 17, 0.2);
+    }
+
+    .result h2 {
+      margin: 0 0 10px;
+      color: var(--navy);
+      font-size: 2rem;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .score {
+      margin: 0 0 18px;
+      font-size: 1.18rem;
+      font-weight: 900;
+    }
+
+    .coupon {
+      margin: 18px 0 0;
+      padding: 18px;
+      border: 2px dashed var(--gold-dark);
+      border-radius: 12px;
+      background: #ffffff;
+      color: var(--navy);
+      font-size: 1.06rem;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .coupon strong {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: #ffffff;
+      background: var(--red);
+      letter-spacing: 0;
+    }
+
+    .retry {
+      min-height: 54px;
+      width: max-content;
+      max-width: 100%;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 10px;
+      color: var(--navy);
+      background: var(--gold);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 9px 0 rgba(0, 0, 0, 0.22);
+    }
+
+    .retry:hover,
+    .retry:focus-visible {
+      outline: 2px solid #ffffff;
+      outline-offset: 3px;
+    }
+
+    .quiz.completed .quiz-body,
+    .quiz.completed .progress {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        padding: 14px;
+      }
+
+      .app {
+        min-height: auto;
+        grid-template-columns: 1fr;
+      }
+
+      .visual {
+        min-height: 330px;
+        background-position: center 12%;
+      }
+
+      .visual::after {
+        background: linear-gradient(180deg, rgba(3, 19, 58, 0), rgba(3, 19, 58, 0.8));
+      }
+
+      .quiz {
+        padding: 24px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .topline {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .counter {
+        min-width: 100%;
+      }
+
+      h1 {
+        font-size: 1.65rem;
+      }
+
+      .question-box {
+        min-height: 132px;
+        padding: 18px;
+      }
+
+      .question {
+        font-size: 1.12rem;
+      }
+
+      .answer {
+        min-height: 62px;
+        grid-template-columns: 52px 1fr;
+      }
+
+      .answer .letter {
+        font-size: 1.45rem;
+      }
+
+      .answer .text {
+        padding: 12px 14px;
+        font-size: 0.94rem;
+      }
+
+      .result-panel {
+        padding: 22px;
+      }
+
+      .result h2 {
+        font-size: 1.58rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="app" aria-label="Quiz techniczny o niemieckich autach">
+      <div class="visual" aria-hidden="true"></div>
+
+      <section class="quiz" id="quiz">
+        <div class="topline">
+          <p class="kicker">Niemieckie auta 1990-2000</p>
+          <div class="counter" id="counter">Pytanie 1/10</div>
+        </div>
+
+        <h1>Techniczny quiz motoryzacyjny</h1>
+
+        <div class="progress" aria-hidden="true">
+          <span id="progressBar"></span>
+        </div>
+
+        <div class="quiz-body" id="quizBody">
+          <div class="question-box">
+            <p class="question" id="questionText"></p>
+          </div>
+
+          <div class="answers" id="answers"></div>
+        </div>
+
+        <div class="result" id="result" aria-live="polite">
+          <div class="result-panel">
+            <h2 id="resultTitle"></h2>
+            <p class="score" id="scoreText"></p>
+            <div id="couponBox"></div>
+          </div>
+          <button class="retry" id="retryButton" type="button">Zagraj ponownie</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const baseQuestions = [
+      {
+        question: "W silnikach VW/Audi 1.9 TDI 1Z/AHU z lat 90. dawkowaniem paliwa sterowała najczęściej:",
+        answers: [
+          "pompa rotacyjna Bosch VP37 sterowana elektronicznie",
+          "gaźnik podciśnieniowy Pierburg",
+          "układ common rail drugiej generacji",
+          "mechaniczna pompa rzędowa bez sterownika"
+        ],
+        correct: 0
+      },
+      {
+        question: "Standardowy układ napędu w BMW serii 3 E36 318i/320i to:",
+        answers: [
+          "silnik z przodu i napęd na przednie koła",
+          "silnik z tyłu i napęd na tył",
+          "silnik z przodu i napęd na tylne koła",
+          "stały napęd 4x4 z centralnym sprzęgłem"
+        ],
+        correct: 2
+      },
+      {
+        question: "Opcjonalny system ASD w Mercedesie W124 był związany przede wszystkim z:",
+        answers: [
+          "automatyczną blokadą mechanizmu różnicowego tylnej osi",
+          "aktywnym sterowaniem geometrią turbiny",
+          "adaptacyjną regulacją świateł mijania",
+          "hydraulicznym podnoszeniem przedniej osi"
+        ],
+        correct: 0
+      },
+      {
+        question: "W wielu Audi quattro z lat 90. z silnikiem ustawionym wzdłużnie centralny mechanizm różnicowy był typu:",
+        answers: [
+          "Torsen",
+          "Haldex pierwszej generacji",
+          "wiskoza bez mechanizmu różnicowego",
+          "sprzęgło elektromagnetyczne tylko na tył"
+        ],
+        correct: 0
+      },
+      {
+        question: "Seryjny Opel Calibra Turbo 4x4 z silnikiem C20LET korzystał z:",
+        answers: [
+          "kompresora mechanicznego Eaton",
+          "turbosprężarki",
+          "dwóch gaźników Weber",
+          "wolnossącego dolotu bez doładowania"
+        ],
+        correct: 1
+      },
+      {
+        question: "Sonda lambda w benzynowym aucie z lat 90. służy głównie do:",
+        answers: [
+          "pomiaru ciśnienia oleju na magistrali",
+          "pomiaru tlenu w spalinach i korekty składu mieszanki",
+          "sterowania wentylatorem chłodnicy bez przekaźnika",
+          "ustawiania mechanicznego luzu zaworowego"
+        ],
+        correct: 1
+      },
+      {
+        question: "Silnik VR6 stosowany m.in. w Volkswagenie Golfie III miał charakterystyczny kąt rozwarcia cylindrów około:",
+        answers: [
+          "15 stopni",
+          "45 stopni",
+          "60 stopni",
+          "90 stopni"
+        ],
+        correct: 0
+      },
+      {
+        question: "Pojedynczy VANOS w silnikach BMW M50TU/M52 sterował przede wszystkim:",
+        answers: [
+          "fazami rozrządu wałka ssącego",
+          "ciśnieniem w układzie hamulcowym",
+          "przełożeniem tylnego mostu",
+          "kątem pochylenia kół przednich"
+        ],
+        correct: 0
+      },
+      {
+        question: "Skrót CDI w Mercedesach z końca lat 90. oznaczał technikę:",
+        answers: [
+          "benzynowego wtrysku jednopunktowego",
+          "bezpośredniego wtrysku diesla common rail",
+          "dwusuwowego smarowania mieszanką",
+          "mechanicznego doładowania benzyny"
+        ],
+        correct: 1
+      },
+      {
+        question: "Podstawowe sygnały dla sterownika ABS Bosch w samochodach z lat 90. pochodzą z:",
+        answers: [
+          "czujników prędkości obrotowej kół",
+          "czujnika poziomu paliwa",
+          "sondy temperatury powietrza kabiny",
+          "potencjometru głośności radia"
+        ],
+        correct: 0
+      },
+      {
+        question: "Do czego służy zawór EGR w dieslu lub benzynie z końca lat 90.?",
+        answers: [
+          "do recyrkulacji części spalin do dolotu",
+          "do mechanicznego ustawiania luzu zaworowego",
+          "do podnoszenia ciśnienia oleju w skrzyni biegów",
+          "do zwiększania napięcia alternatora"
+        ],
+        correct: 0
+      },
+      {
+        question: "Czujnik MAF, czyli przepływomierz masowy, mierzy przede wszystkim:",
+        answers: [
+          "temperaturę tarcz hamulcowych",
+          "masę powietrza zasysanego przez silnik",
+          "poziom paliwa w zbiorniku",
+          "prędkość obrotową wału napędowego"
+        ],
+        correct: 1
+      },
+      {
+        question: "Czujnik spalania stukowego w silniku benzynowym pomaga sterownikowi:",
+        answers: [
+          "wykryć detonacyjne spalanie i korygować zapłon",
+          "sprawdzić grubość klocków hamulcowych",
+          "ustawić zbieżność tylnej osi",
+          "dobrać przełożenie przekładni kierowniczej"
+        ],
+        correct: 0
+      },
+      {
+        question: "Termostat w układzie chłodzenia odpowiada głównie za:",
+        answers: [
+          "utrzymywanie właściwej temperatury pracy silnika",
+          "sterowanie dawką paliwa na biegu jałowym",
+          "pomiar ciśnienia w kolektorze wydechowym",
+          "zabezpieczenie radia przed kradzieżą"
+        ],
+        correct: 0
+      },
+      {
+        question: "Intercooler w silniku doładowanym służy do:",
+        answers: [
+          "chłodzenia powietrza sprężonego przez turbosprężarkę lub kompresor",
+          "podgrzewania oleju w skrzyni automatycznej",
+          "zmiany kąta pochylenia kół",
+          "odpowietrzania układu hamulcowego"
+        ],
+        correct: 0
+      },
+      {
+        question: "Dwumasowe koło zamachowe stosuje się po to, aby:",
+        answers: [
+          "tłumić drgania skrętne między silnikiem i skrzynią biegów",
+          "zwiększyć pojemność układu chłodzenia",
+          "zasilać pompę paliwa bez przekaźnika",
+          "automatycznie regulować wysokość reflektorów"
+        ],
+        correct: 0
+      },
+      {
+        question: "Gniazdo OBD-II w autach z końca lat 90. najczęściej kojarzy się z:",
+        answers: [
+          "16-pinowym złączem diagnostycznym",
+          "okrągłym korkiem wlewu oleju",
+          "specjalną śrubą do regulacji zbieżności",
+          "złączem anteny dachowej"
+        ],
+        correct: 0
+      },
+      {
+        question: "Bosch Motronic w silnikach benzynowych odpowiadał za:",
+        answers: [
+          "sterowanie wtryskiem paliwa i zapłonem",
+          "pracę mechanizmu podnoszenia szyb wyłącznie ręcznie",
+          "smarowanie przekładni głównej",
+          "kodowanie pilota centralnego zamka bez sterownika"
+        ],
+        correct: 0
+      },
+      {
+        question: "Bosch K-Jetronic to układ, który najlepiej opisać jako:",
+        answers: [
+          "mechaniczny ciągły wtrysk benzyny",
+          "elektryczny napęd tylnej osi",
+          "hydrauliczny układ zawieszenia pneumatycznego",
+          "dwusprzęgłową skrzynię automatyczną"
+        ],
+        correct: 0
+      },
+      {
+        question: "G-Lader stosowany w Volkswagenach G60 był:",
+        answers: [
+          "spiralną sprężarką mechaniczną",
+          "pompą wtryskową common rail",
+          "typem tylnego zawieszenia belkowego",
+          "czujnikiem temperatury oleju"
+        ],
+        correct: 0
+      },
+      {
+        question: "Haldex pierwszej generacji w autach z końca lat 90. odpowiadał za:",
+        answers: [
+          "dołączanie tylnej osi przez sprzęgło wielopłytkowe",
+          "mechaniczne ustawianie kąta zapłonu",
+          "pompowanie paliwa w układzie gaźnikowym",
+          "regulację jasności zegarów"
+        ],
+        correct: 0
+      },
+      {
+        question: "Mercedesowska skrzynia 722.6 z lat 90. była:",
+        answers: [
+          "elektronicznie sterowanym automatem pięciobiegowym",
+          "manualną skrzynią bez synchronizacji",
+          "bezstopniową przekładnią pasową CVT",
+          "przekładnią kierowniczą ze ślimakiem"
+        ],
+        correct: 0
+      },
+      {
+        question: "Tryb Tiptronic oznaczał w skrzyni automatycznej:",
+        answers: [
+          "możliwość ręcznego wyboru przełożeń przez kierowcę",
+          "stałą blokadę mostu tylnego",
+          "wyłączenie układu ABS",
+          "ręczne ssanie jak w gaźniku"
+        ],
+        correct: 0
+      },
+      {
+        question: "Kolumna McPhersona w przednim zawieszeniu łączy funkcję amortyzatora z:",
+        answers: [
+          "prowadzeniem zwrotnicy",
+          "pompowaniem paliwa",
+          "chłodzeniem turbosprężarki",
+          "kodowaniem immobilizera"
+        ],
+        correct: 0
+      },
+      {
+        question: "Tylne zawieszenie wielowahaczowe daje przewagę, bo:",
+        answers: [
+          "pozwala dokładniej prowadzić koło w czasie pracy zawieszenia",
+          "zastępuje układ hamulcowy bębnowy",
+          "usuwa potrzebę stosowania oleju silnikowego",
+          "mechanicznie zwiększa pojemność skokową silnika"
+        ],
+        correct: 0
+      },
+      {
+        question: "ESP stabilizuje tor jazdy głównie przez:",
+        answers: [
+          "przyhamowanie wybranych kół i ograniczenie momentu silnika",
+          "zwiększenie ciśnienia w oponach podczas jazdy",
+          "zmianę długości wahaczy",
+          "odłączenie alternatora"
+        ],
+        correct: 0
+      },
+      {
+        question: "ASR w samochodzie z lat 90. ogranicza:",
+        answers: [
+          "poślizg kół napędowych podczas przyspieszania",
+          "temperaturę płynu spryskiwaczy",
+          "zużycie żarówek pozycyjnych",
+          "luz na pedale sprzęgła"
+        ],
+        correct: 0
+      },
+      {
+        question: "DSC w BMW to system związany z:",
+        answers: [
+          "kontrolą stabilności jazdy",
+          "pomiarami kompresji cylindrów",
+          "regulacją wysokości anteny",
+          "mechanicznym doładowaniem silnika"
+        ],
+        correct: 0
+      },
+      {
+        question: "Czynnik R134a w autach z lat 90. dotyczy przede wszystkim:",
+        answers: [
+          "układu klimatyzacji",
+          "przekładni kierowniczej",
+          "mostu napędowego",
+          "cewki zapłonowej"
+        ],
+        correct: 0
+      },
+      {
+        question: "W silniku 1.9 TDI z pompą rotacyjną pasek rozrządu napędza zwykle:",
+        answers: [
+          "wałek rozrządu i pompę wtryskową",
+          "wyłącznie alternator",
+          "wał napędowy tylnej osi",
+          "pompę wspomagania hamulców bezpośrednio z koła"
+        ],
+        correct: 0
+      },
+      {
+        question: "Łańcuch rozrządu w silnikach BMW M50/M52 przenosi napęd na:",
+        answers: [
+          "wałki rozrządu",
+          "półosie napędowe",
+          "wirnik turbosprężarki",
+          "wentylator nawiewu kabiny"
+        ],
+        correct: 0
+      },
+      {
+        question: "Mercedes M111 to rodzina silników, którą najłatwiej skojarzyć z:",
+        answers: [
+          "benzynowym silnikiem R4 z łańcuchem rozrządu",
+          "dwusuwowym dieslem z pompą rzędową",
+          "silnikiem Wankla w klasie C",
+          "elektrycznym napędem bez skrzyni biegów"
+        ],
+        correct: 0
+      },
+      {
+        question: "Audi/VW 1.8T 20V oznacza, że silnik ma:",
+        answers: [
+          "turbodoładowanie i 20 zaworów",
+          "dwa cylindry i zero zaworów wydechowych",
+          "20 litrów pojemności skokowej",
+          "wyłącznie wtrysk mechaniczny bez sterownika"
+        ],
+        correct: 0
+      },
+      {
+        question: "Zawór N75 w wielu silnikach turbo grupy VW odpowiada za:",
+        answers: [
+          "sterowanie ciśnieniem doładowania",
+          "zmianę koloru podświetlenia zegarów",
+          "regulację ręcznego hamulca",
+          "odpowietrzenie układu sprzęgła"
+        ],
+        correct: 0
+      },
+      {
+        question: "Wastegate w turbosprężarce służy do:",
+        answers: [
+          "omijania turbiny przez część spalin i kontroli doładowania",
+          "dozowania paliwa na wolnych obrotach w gaźniku",
+          "odprowadzania wody z reflektora",
+          "regulacji napięcia paska klinowego"
+        ],
+        correct: 0
+      },
+      {
+        question: "Turbosprężarka VNT/VTG zmienia:",
+        answers: [
+          "geometrię kierownic spalin w części gorącej",
+          "skok tłoka w cylindrze",
+          "średnicę tarcz hamulcowych",
+          "liczbę śrub w kole"
+        ],
+        correct: 0
+      },
+      {
+        question: "Katalizator trójdrożny w benzynie najlepiej pracuje, gdy:",
+        answers: [
+          "mieszanka oscyluje blisko wartości lambda 1",
+          "silnik pracuje bez sondy lambda na stałe bogato",
+          "układ chłodzenia jest całkowicie pusty",
+          "wyłączony jest czujnik położenia wału"
+        ],
+        correct: 0
+      },
+      {
+        question: "Świece żarowe w dieslu odpowiadają za:",
+        answers: [
+          "ułatwienie rozruchu przez podgrzanie komory spalania",
+          "wytworzenie iskry w każdym cyklu pracy",
+          "zasilanie wentylatora chłodnicy",
+          "pomiar prędkości samochodu"
+        ],
+        correct: 0
+      },
+      {
+        question: "Immobilizer z transponderem w kluczyku ma za zadanie:",
+        answers: [
+          "rozpoznać właściwy klucz przed uruchomieniem silnika",
+          "zmienić dawkę oleju w amortyzatorze",
+          "otworzyć mechanicznie zawór EGR",
+          "zwiększyć ciśnienie w układzie klimatyzacji"
+        ],
+        correct: 0
+      },
+      {
+        question: "BMW EWS to system związany głównie z:",
+        answers: [
+          "blokadą rozruchu i autoryzacją klucza",
+          "napędem rozrządu paskiem zębatym",
+          "hydraulicznym sterowaniem turbiny",
+          "manualną regulacją gaźnika"
+        ],
+        correct: 0
+      },
+      {
+        question: "Magistrala CAN w samochodzie służy do:",
+        answers: [
+          "komunikacji między sterownikami",
+          "mechanicznego napędu pompy oleju",
+          "chłodzenia intercoolera płynem hamulcowym",
+          "zmiany rozstawu śrub felg"
+        ],
+        correct: 0
+      },
+      {
+        question: "Układ DISA w wybranych silnikach BMW zmienia:",
+        answers: [
+          "efektywną długość kanałów dolotowych",
+          "liczbę cylindrów podczas jazdy",
+          "średnicę kół zimowych",
+          "położenie tylnej kanapy"
+        ],
+        correct: 0
+      },
+      {
+        question: "Opel ECOTEC X20XEV to najczęściej opisywany jako:",
+        answers: [
+          "benzynowy silnik 2.0 16V DOHC",
+          "diesel common rail V6",
+          "dwusuwowa jednostka gaźnikowa",
+          "silnik elektryczny z przekładnią planetarną"
+        ],
+        correct: 0
+      },
+      {
+        question: "Przepływomierz HFM/HFM5 działa na zasadzie:",
+        answers: [
+          "pomiaru masy powietrza elementem podgrzewanym",
+          "pomiaru grubości lakieru na błotniku",
+          "zliczania obrotów koła pasowego alternatora",
+          "regulacji napięcia paska rozrządu"
+        ],
+        correct: 0
+      },
+      {
+        question: "Czujnik położenia wału korbowego daje sterownikowi informację potrzebną do:",
+        answers: [
+          "synchronizacji zapłonu i wtrysku",
+          "otwarcia zamka bagażnika",
+          "ustawienia geometrii zawieszenia",
+          "wyboru stacji radiowej"
+        ],
+        correct: 0
+      },
+      {
+        question: "Czujnik temperatury płynu chłodzącego dla ECU wpływa między innymi na:",
+        answers: [
+          "dawkę paliwa podczas zimnego rozruchu",
+          "rozmiar opony zapisany na feldze",
+          "grubość tarczy sprzęgła",
+          "siłę domykania szyberdachu"
+        ],
+        correct: 0
+      },
+      {
+        question: "Regulator ciśnienia paliwa w listwie wtryskowej utrzymuje:",
+        answers: [
+          "właściwe ciśnienie paliwa względem dolotu",
+          "stałą temperaturę oleju w dyferencjale",
+          "napięcie paska alternatora",
+          "wysokość zawieszenia przedniej osi"
+        ],
+        correct: 0
+      },
+      {
+        question: "Wtrysk sekwencyjny w benzynie oznacza, że paliwo jest podawane:",
+        answers: [
+          "oddzielnie do cylindrów zgodnie z kolejnością pracy",
+          "jednym wtryskiwaczem przed przepustnicą zawsze równocześnie",
+          "wyłącznie mechanicznie przez gaźnik",
+          "tylko do kolektora wydechowego"
+        ],
+        correct: 0
+      },
+      {
+        question: "Liczba oktanowa paliwa określa głównie:",
+        answers: [
+          "odporność benzyny na spalanie stukowe",
+          "ilość oleju napędowego w mieszance",
+          "temperaturę zamarzania płynu chłodniczego",
+          "ciśnienie w klimatyzacji"
+        ],
+        correct: 0
+      },
+      {
+        question: "Turbodziura oznacza w praktyce:",
+        answers: [
+          "opóźnioną reakcję silnika turbo na gaz przy niskim przepływie spalin",
+          "dziurę w obudowie filtra kabinowego",
+          "brak jednego biegu w skrzyni automatycznej",
+          "zbyt duży luz na pedale hamulca"
+        ],
+        correct: 0
+      },
+      {
+        question: "Skrót LSD przy mechanizmie różnicowym oznacza:",
+        answers: [
+          "mechanizm o ograniczonym poślizgu",
+          "lampę sygnalizującą diesla",
+          "czujnik poziomu płynu spryskiwaczy",
+          "układ ładowania akumulatora"
+        ],
+        correct: 0
+      },
+      {
+        question: "Parametr ET felgi określa:",
+        answers: [
+          "odsadzenie felgi od płaszczyzny montażowej",
+          "liczbę zaworów w cylindrze",
+          "pojemność akumulatora",
+          "typ oleju przekładniowego"
+        ],
+        correct: 0
+      },
+      {
+        question: "Oznaczenie PCD 5x112 przy feldze oznacza:",
+        answers: [
+          "5 otworów i okrąg montażowy o średnicy 112 mm",
+          "5 biegów i 112 koni mechanicznych",
+          "112 litrów pojemności bagażnika",
+          "5 cylindrów ustawionych pod kątem 112 stopni"
+        ],
+        correct: 0
+      },
+      {
+        question: "Główne zadanie ABS podczas hamowania to:",
+        answers: [
+          "zapobieganie blokowaniu kół",
+          "zwiększanie mocy silnika przy wyprzedzaniu",
+          "automatyczne składanie lusterek",
+          "zmiana przełożenia dyferencjału"
+        ],
+        correct: 0
+      },
+      {
+        question: "EBD w układzie hamulcowym oznacza:",
+        answers: [
+          "elektroniczny rozdział siły hamowania",
+          "elektryczne blokowanie drzwi",
+          "emulsję benzyny z dieslem",
+          "czujnik temperatury spalin"
+        ],
+        correct: 0
+      },
+      {
+        question: "Samopoziomowanie tylnego zawieszenia w kombi pomaga:",
+        answers: [
+          "utrzymać stałą wysokość auta po obciążeniu",
+          "zwiększyć ciśnienie doładowania",
+          "zmienić liczbę przełożeń skrzyni",
+          "wyłączyć sondę lambda"
+        ],
+        correct: 0
+      },
+      {
+        question: "DME w oznaczeniach BMW odnosi się do:",
+        answers: [
+          "sterownika silnika benzynowego",
+          "mechanizmu różnicowego tylnej osi",
+          "układu spryskiwaczy reflektorów",
+          "czujnika poziomu klocków hamulcowych"
+        ],
+        correct: 0
+      },
+      {
+        question: "DDE w BMW oznacza sterowanie:",
+        answers: [
+          "silnikiem wysokoprężnym",
+          "elektrycznym szyberdachem",
+          "manualną skrzynią biegów",
+          "systemem audio"
+        ],
+        correct: 0
+      },
+      {
+        question: "Pompowtryskiwacz w dieslu łączy w jednym elemencie:",
+        answers: [
+          "pompę wysokiego ciśnienia i wtryskiwacz",
+          "alternator i rozrusznik",
+          "amortyzator i tarczę hamulcową",
+          "termostat i chłodnicę"
+        ],
+        correct: 0
+      },
+      {
+        question: "Uszkodzony przepływomierz w turbodieslu często powoduje:",
+        answers: [
+          "spadek mocy i błędne dawkowanie paliwa",
+          "pęknięcie szyby czołowej",
+          "stałe zwiększenie pojemności silnika",
+          "blokadę zamka bagażnika"
+        ],
+        correct: 0
+      }
+    ];
+
+    const questionPrefixes = [
+      "Warsztat:",
+      "Diagnostyka:",
+      "Serwis:",
+      "Test techniczny:",
+      "Próba drogowa:"
+    ];
+    const quizLength = 10;
+    const questionBank = buildQuestionBank();
+    let questions = pickRandomQuestions(questionBank, quizLength);
+
+    const letters = ["A", "B", "C", "D"];
+    const quiz = document.getElementById("quiz");
+    const counter = document.getElementById("counter");
+    const progressBar = document.getElementById("progressBar");
+    const questionText = document.getElementById("questionText");
+    const answers = document.getElementById("answers");
+    const result = document.getElementById("result");
+    const resultTitle = document.getElementById("resultTitle");
+    const scoreText = document.getElementById("scoreText");
+    const couponBox = document.getElementById("couponBox");
+    const retryButton = document.getElementById("retryButton");
+
+    let currentQuestion = 0;
+    let score = 0;
+    let locked = false;
+
+    function buildQuestionBank() {
+      return questionPrefixes.flatMap((prefix, prefixIndex) =>
+        baseQuestions.map((item, questionIndex) => ({
+          ...item,
+          id: `${prefixIndex + 1}-${questionIndex + 1}`,
+          question: `${prefix} ${item.question}`
+        }))
+      );
+    }
+
+    function shuffleItems(items) {
+      const shuffled = [...items];
+
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+      }
+
+      return shuffled;
+    }
+
+    function shuffleAnswers(item) {
+      const mixedAnswers = shuffleItems(
+        item.answers.map((answer, index) => ({
+          answer,
+          originalIndex: index
+        }))
+      );
+
+      return {
+        ...item,
+        answers: mixedAnswers.map((entry) => entry.answer),
+        correct: mixedAnswers.findIndex((entry) => entry.originalIndex === item.correct)
+      };
+    }
+
+    function pickRandomQuestions(pool, amount) {
+      return shuffleItems(pool).slice(0, amount).map(shuffleAnswers);
+    }
+
+    function renderQuestion() {
+      const item = questions[currentQuestion];
+      locked = false;
+      quiz.classList.remove("completed");
+      result.classList.remove("show");
+      counter.textContent = `Pytanie ${currentQuestion + 1}/${questions.length}`;
+      progressBar.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+      questionText.textContent = item.question;
+      answers.innerHTML = "";
+
+      item.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.className = "answer";
+        button.type = "button";
+        button.innerHTML = `
+          <span class="letter">${letters[index]}</span>
+          <span class="text">${answer}</span>
+        `;
+        button.addEventListener("click", () => selectAnswer(index, button));
+        answers.appendChild(button);
+      });
+    }
+
+    function selectAnswer(index, button) {
+      if (locked) {
+        return;
+      }
+
+      locked = true;
+      const item = questions[currentQuestion];
+      const isCorrect = index === item.correct;
+      const buttons = [...answers.querySelectorAll(".answer")];
+
+      if (isCorrect) {
+        score += 1;
+        button.classList.add("correct");
+      } else {
+        button.classList.add("wrong");
+      }
+
+      buttons.forEach((answerButton) => {
+        answerButton.disabled = true;
+      });
+
+      setTimeout(() => {
+        currentQuestion += 1;
+        if (currentQuestion < questions.length) {
+          renderQuestion();
+        } else {
+          showResult();
+        }
+      }, 320);
+    }
+
+    function showResult() {
+      quiz.classList.add("completed");
+      result.classList.add("show");
+      counter.textContent = "Koniec quizu";
+      resultTitle.textContent = score === questions.length ? "Wynik perfekcyjny" : "Twój wynik";
+      scoreText.textContent = `Poprawne odpowiedzi: ${score}/${questions.length}`;
+
+      if (score === questions.length) {
+        couponBox.innerHTML = `
+          <p class="coupon">
+            Gratulacje, otrzymujesz kod rabatowy 30% o treści
+            <strong>GKSARK#$#30</strong>
+            do wykorzystania do końca miesiąca.
+          </p>
+        `;
+      } else {
+        couponBox.innerHTML = `
+          <p class="coupon">
+            Kod rabatowy pojawia się tylko przy wyniku 10/10.
+          </p>
+        `;
+      }
+    }
+
+    retryButton.addEventListener("click", () => {
+      questions = pickRandomQuestions(questionBank, quizLength);
+      currentQuestion = 0;
+      score = 0;
+      renderQuestion();
+    });
+
+    renderQuestion();
+  </script>
+</body>
+</html>
